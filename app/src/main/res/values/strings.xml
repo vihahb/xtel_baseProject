@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">iVip</string>
+    <string name="home_name">Base Project</string>
+
+    <!-- Action -->
+    <string name="action_settings">Setting</string>
+
+
+    <!-- Message App -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- Show Toast Message -->
+    <string name="text_back_press_to_exit">Nhấn back lần nữa để thoát app</string>
+
+
+    <!-- Request -->
+    <string name="error_server_request">Không thể kết nối tới Server</string>
+    <string name="err_post">Đăng tin thất bại</string>
+
+    <!-- Permission && Code error -->
+    <string name="error_code_2">Phiên không hợp lệ</string>
+    <string name="error_code_3">Bạn không có quyền hạn này</string>
+    <string name="error_code_4">Lỗi hệ thống</string>
+    <string name="error_code_1001">Bãi đỗ không tồn tại</string>
+</resources>
