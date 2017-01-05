@@ -18,6 +18,8 @@ import com.xtel.basicsample.R;
 import com.xtel.basicsample.presenter.HomePresenter;
 import com.xtel.basicsample.view.activity.inf.IHome;
 
+import base.project.sdk.view.Demo;
+
 /**
  * Created by vivhp on 12/29/2016.
  */
@@ -32,6 +34,8 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        showShortToast(Demo.getData(this));
 
         presenter = new HomePresenter(this);
         initView();
