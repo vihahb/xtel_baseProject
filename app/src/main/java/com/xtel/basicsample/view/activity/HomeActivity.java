@@ -10,6 +10,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,8 +18,11 @@ import android.view.View;
 import com.xtel.basicsample.R;
 import com.xtel.basicsample.presenter.HomePresenter;
 import com.xtel.basicsample.view.activity.inf.IHome;
+import com.xtel.nipservicesdk.CallbackManager;
+import com.xtel.nipservicesdk.callback.CallbacListener;
+import com.xtel.nipservicesdk.model.entity.Error;
+import com.xtel.nipservicesdk.model.entity.RESP_Login;
 
-import base.project.sdk.view.Demo;
 
 /**
  * Created by vivhp on 12/29/2016.
@@ -27,19 +31,27 @@ import base.project.sdk.view.Demo;
 public class HomeActivity extends BasicActivity implements NavigationView.OnNavigationItemSelectedListener, IHome {
     HomePresenter presenter;
 
+
     private DrawerLayout drawer;
     private NavigationView navigationView;
-
+    private CallbackManager callbackManager;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        showShortToast(Demo.getData(this));
+//        showShortToast(Demo.getData(this));
+        callbackManager = CallbackManager.create(this);
 
         presenter = new HomePresenter(this);
         initView();
         initNavigation();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        callbackManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void initView() {
@@ -53,6 +65,7 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
                 showSnackBarShort(v, "Replace Message....");
             }
         });
+        onLogin();
     }
 
     @SuppressWarnings("deprecation")
@@ -66,6 +79,22 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void onLogin() {
+        String accessTokent = "EAAXEtiHaSw0BANabsJ4B24YvNC3bKOZA4lmdBiDHvecx2myMNzNLZAJefqWR9vvFCmgrRr0ayzuN5779EISYKo3oDzyyye8bK0FKTU05CUFVqwR2nfpY5YycIvzOaloB38vKLFEAVHdLYZBoYOedXCCrrxjEhO5auav2MxDadzDkQNxTvSObkcsZALA2OEaCYnrsZATYUsEydILw8L0xN";
+        callbackManager.LoginFaceook(accessTokent, new CallbacListener() {
+            @Override
+            public void onSuccess(RESP_Login success) {
+                Log.e("Session", success.getSession());
+            }
+
+            @Override
+            public void onError(Error error) {
+                Log.e("Error", error.getType().toString());
+            }
+        });
+
     }
 
     @Override

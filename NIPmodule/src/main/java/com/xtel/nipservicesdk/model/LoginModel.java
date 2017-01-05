@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.xtel.nipservicesdk.callback.ResponseHandle;
 import com.xtel.nipservicesdk.commons.Constants;
 import com.xtel.nipservicesdk.model.entity.AuthenNip;
+import com.xtel.nipservicesdk.model.entity.AuthenNipModel;
 import com.xtel.nipservicesdk.model.entity.RESP_Login;
 import com.xtel.nipservicesdk.model.entity.RESP_Reactive;
 import com.xtel.nipservicesdk.model.entity.RESP_Register;
@@ -34,8 +35,13 @@ public class LoginModel extends BasicModel {
         return instance;
     }
 
-    public void postFacebookData2Server(String jsonObject, ResponseHandle<RESP_Login> responseHandle) {
-        requestServer.postApi(url_facebook, jsonObject, null, responseHandle);
+    public void postFacebookData2Server(String service_code, String token_key, ResponseHandle<RESP_Login> responseHandle) {
+        AuthenNipModel facebookModel = new AuthenNipModel();
+        facebookModel.setAccess_token_key(token_key);
+        facebookModel.setService_code(service_code);
+        facebookModel.setDevInfo(DeviceInfo.getDeviceObject());
+
+        requestServer.postApi(url_facebook, JsonHelper.toJson(facebookModel), null, responseHandle);
     }
 
     public void postAccountKitData2Server(String jsonObject, ResponseHandle<RESP_Login> responseHandle) {

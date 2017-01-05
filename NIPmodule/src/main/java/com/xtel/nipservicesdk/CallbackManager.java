@@ -3,8 +3,12 @@ package com.xtel.nipservicesdk;
 import android.Manifest;
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.xtel.nipservicesdk.callback.CallbacListener;
+import com.xtel.nipservicesdk.callback.CallbackLisenerRegister;
+import com.xtel.nipservicesdk.callback.CallbackListenerReactive;
+import com.xtel.nipservicesdk.callback.CallbackListenerReset;
 import com.xtel.nipservicesdk.callback.ICmd;
 import com.xtel.nipservicesdk.callback.ResponseHandle;
 import com.xtel.nipservicesdk.commons.Constants;
@@ -39,11 +43,26 @@ public class CallbackManager {
     private ICmd iCmd = new ICmd() {
         @Override
         public void execute() {
+            Log.e("TAG", "DFDFFDSFDSFDS      " + object.get(0));
             if ((Integer) object.get(0) == 1) {
 
                 LoginModel.getInstance().getNewSession((String) object.get(1), new ResponseHandle<RESP_Login>(RESP_Login.class) {
                     @Override
                     public void onSuccess(RESP_Login obj) {
+                        callbacListener.onSuccess(obj);
+                    }
+
+                    @Override
+                    public void onError(Error error) {
+                        callbacListener.onError(error);
+                    }
+                });
+            } else if ((Integer) object.get(0) == 2) {
+                LoginModel.getInstance().postFacebookData2Server((String) object.get(1), (String) object.get(1), new ResponseHandle<RESP_Login>(RESP_Login.class) {
+                    @Override
+                    public void onSuccess(RESP_Login obj) {
+                        SharedUtils.getInstance().putStringValue(Constants.USER_AUTH_ID, obj.getAuthenticationid());
+                        SharedUtils.getInstance().putStringValue(Constants.SESSION, obj.getSession());
                         callbacListener.onSuccess(obj);
                     }
 
@@ -74,26 +93,44 @@ public class CallbackManager {
         }
     }
 
-    public void LoginFaceook(String token_key, DeviceObject deviceObject, final CallbacListener callbacListener) {
+    public void LoginFaceook(String token_key, final CallbacListener callbacListener) {
         String service_code = LoginModel.getInstance().getServiceCode(activity);
-        AuthenNipModel facebookModel = new AuthenNipModel();
-        facebookModel.setAccess_token_key(token_key);
-        facebookModel.setService_code(service_code);
-        facebookModel.setDevInfo(deviceObject);
 
-        LoginModel.getInstance().postFacebookData2Server(JsonHelper.toJson(facebookModel), new ResponseHandle<RESP_Login>(RESP_Login.class) {
-            @Override
-            public void onSuccess(RESP_Login obj) {
-                SharedUtils.getInstance().putStringValue(Constants.USER_AUTH_ID, obj.getAuthenticationid());
-                SharedUtils.getInstance().putStringValue(Constants.SESSION, obj.getSession());
-                callbacListener.onSuccess(obj);
-            }
+        if (service_code == null || service_code.isEmpty()) {
+            callbacListener.onError(new Error(-2, activity.getString(R.string.error), activity.getString(R.string.error_no_service_code)));
+            return;
+        }
 
-            @Override
-            public void onError(Error error) {
-                callbacListener.onError(error);
-            }
-        });
+        Log.e("TAG", "DFDFFDSFDSFDS");
+
+        this.callbacListener = callbacListener;
+
+        object.clear();
+        object.add(2);
+        object.add(token_key);
+        object.add(service_code);
+
+        if (checkPermission())
+            iCmd.execute();
+
+//        AuthenNipModel facebookModel = new AuthenNipModel();
+//        facebookModel.setAccess_token_key(token_key);
+//        facebookModel.setService_code(service_code);
+//        facebookModel.setDevInfo(DeviceInfo.getDeviceObject());
+
+//        LoginModel.getInstance().postFacebookData2Server(JsonHelper.toJson(facebookModel), new ResponseHandle<RESP_Login>(RESP_Login.class) {
+//            @Override
+//            public void onSuccess(RESP_Login obj) {
+//                SharedUtils.getInstance().putStringValue(Constants.USER_AUTH_ID, obj.getAuthenticationid());
+//                SharedUtils.getInstance().putStringValue(Constants.SESSION, obj.getSession());
+//                callbacListener.onSuccess(obj);
+//            }
+//
+//            @Override
+//            public void onError(Error error) {
+//                callbacListener.onError(error);
+//            }
+//        });
     }
 
     public void LoginAccountKit(String authorization_code, DeviceObject deviceObject, final CallbacListener callbacListener) {
@@ -139,7 +176,7 @@ public class CallbackManager {
         });
     }
 
-    public void registerNipService(String user_name, String password, String email, int sendMail, int type, final CallbacListener callbacListener) {
+    public void registerNipService(String user_name, String password, String email, int sendMail, int type, final CallbackLisenerRegister callbacListener) {
         RegisterModel registerNipModel = new RegisterModel();
         registerNipModel.setUser_name(user_name);
         registerNipModel.setPassword(password);
@@ -164,7 +201,7 @@ public class CallbackManager {
         });
     }
 
-    public void resetNipAccount(String email, int sendEmail, final CallbacListener callbacListener) {
+    public void resetNipAccount(String email, int sendEmail, final CallbackListenerReset callbacListener) {
         String service_code = LoginModel.getInstance().getServiceCode(activity);
         ResetEntity resetEntity = new ResetEntity();
         resetEntity.setEmail(email);
@@ -186,7 +223,7 @@ public class CallbackManager {
         });
     }
 
-    public void reactiveNipAccount(String user_name, int sendMail, int accountType, final CallbacListener callbacListener) {
+    public void reactiveNipAccount(String user_name, int sendMail, int accountType, final CallbackListenerReactive callbacListener) {
         String service_code = LoginModel.getInstance().getServiceCode(activity);
         ReactiveNip reactiveNip = new ReactiveNip();
         reactiveNip.setUsername(user_name);
