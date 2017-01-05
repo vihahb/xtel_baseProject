@@ -4,15 +4,18 @@ import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.xtel.nipservicesdk.callback.ResponseHandle;
 import com.xtel.nipservicesdk.commons.Constants;
 import com.xtel.nipservicesdk.model.entity.AuthenNip;
 import com.xtel.nipservicesdk.model.entity.AuthenNipModel;
+import com.xtel.nipservicesdk.model.entity.LoginNipModel;
 import com.xtel.nipservicesdk.model.entity.RESP_Login;
 import com.xtel.nipservicesdk.model.entity.RESP_Reactive;
 import com.xtel.nipservicesdk.model.entity.RESP_Register;
 import com.xtel.nipservicesdk.model.entity.RESP_Reset;
+import com.xtel.nipservicesdk.model.entity.RegisterModel;
 import com.xtel.nipservicesdk.utils.DeviceInfo;
 import com.xtel.nipservicesdk.utils.JsonHelper;
 import com.xtel.nipservicesdk.utils.SharedUtils;
@@ -44,17 +47,40 @@ public class LoginModel extends BasicModel {
         requestServer.postApi(url_facebook, JsonHelper.toJson(facebookModel), null, responseHandle);
     }
 
-    public void postAccountKitData2Server(String jsonObject, ResponseHandle<RESP_Login> responseHandle) {
-        requestServer.postApi(url_account_kit, jsonObject, null, responseHandle);
+    public void postAccountKitData2Server(String service_code, String authorization_code, ResponseHandle<RESP_Login> responseHandle) {
+        AuthenNipModel accountKitModel = new AuthenNipModel();
+        accountKitModel.setAuthorization_code(authorization_code);
+        accountKitModel.setService_code(service_code);
+        accountKitModel.setDevInfo(DeviceInfo.getDeviceObject());
+        requestServer.postApi(url_account_kit, JsonHelper.toJson(accountKitModel), null, responseHandle);
     }
 
 
-    public void registerAccountNip(String jsonObject, ResponseHandle<RESP_Register> responseHandle) {
-        requestServer.postApi(url_reg_nip_acc, jsonObject, null, responseHandle);
+    public void registerAccountNip(String user_name, String password, String email, int sendMail, String type, String service_code, ResponseHandle<RESP_Register> responseHandle) {
+        RegisterModel registerNipModel = new RegisterModel();
+        registerNipModel.setUsername(user_name);
+        registerNipModel.setPassword(password);
+        registerNipModel.setEmail(email);
+        registerNipModel.setSendEmail(sendMail);
+        registerNipModel.setService_code(service_code);
+        if (type.equals("EMAIL")) {
+            registerNipModel.setAccountType("EMAIL");
+        } else if (type.equals("PHONE-NUMBER")){
+            registerNipModel.setAccountType("PHONE-NUMBER");
+        }
+        Log.e("Object reg nip", JsonHelper.toJson(registerNipModel));
+        requestServer.postApi(url_reg_nip_acc, JsonHelper.toJson(registerNipModel), null, responseHandle);
     }
 
-    public void loginNipServices(String jsonObject, ResponseHandle<RESP_Login> responseHandle) {
-        requestServer.postApi(url_login, jsonObject, null, responseHandle);
+    public void loginNipServices(String user_name, String password, String service_code, ResponseHandle<RESP_Login> responseHandle) {
+        LoginNipModel loginNipModel = new LoginNipModel();
+        loginNipModel.setUsername(user_name);
+        loginNipModel.setPassword(password);
+        loginNipModel.setService_code(service_code);
+        loginNipModel.setDevInfo(DeviceInfo.getDeviceObject());
+        String request = JsonHelper.toJson(loginNipModel);
+        Log.e("Request len: + ", request);
+        requestServer.postApi(url_login, JsonHelper.toJson(loginNipModel), null, responseHandle);
     }
 
     public void resetPassworf(String jsonObject, ResponseHandle<RESP_Reset> responseHandle) {

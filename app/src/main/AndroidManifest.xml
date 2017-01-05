@@ -18,8 +18,7 @@
             </intent-filter>
         </activity>
         <meta-data
-            android:name="xtel_service_code"
-            android:value="XTEL-SDK"></meta-data>
+            android:name="xtel_service_code" android:value="XTEL-SDK"/>
         <activity
             android:name="com.xtel.basicsample.view.activity.HomeActivity"
             android:label="@string/home_name"

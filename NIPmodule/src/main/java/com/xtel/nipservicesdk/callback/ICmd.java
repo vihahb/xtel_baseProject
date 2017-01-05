@@ -5,4 +5,5 @@ package com.xtel.nipservicesdk.callback;
  */
 
 public interface ICmd {
+    void execute();
 }

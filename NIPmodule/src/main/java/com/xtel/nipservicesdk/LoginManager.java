@@ -54,18 +54,18 @@ public class LoginManager {
         accountKitModel.getService_code();
         accountKitModel.setDevInfo(deviceObject);
 
-        LoginModel.getInstance().postAccountKitData2Server(JsonHelper.toJson(accountKitModel), new ResponseHandle<RESP_Login>(RESP_Login.class) {
-            @Override
-            public void onSuccess(RESP_Login obj) {
-                SharedUtils.getInstance().putStringValue(Constants.SESSION, obj.getSession());
-                callbacListener.onSuccess(obj);
-            }
-
-            @Override
-            public void onError(Error error) {
-                callbacListener.onError(error);
-            }
-        });
+//        LoginModel.getInstance().postAccountKitData2Server(JsonHelper.toJson(accountKitModel), new ResponseHandle<RESP_Login>(RESP_Login.class) {
+//            @Override
+//            public void onSuccess(RESP_Login obj) {
+//                SharedUtils.getInstance().putStringValue(Constants.SESSION, obj.getSession());
+//                callbacListener.onSuccess(obj);
+//            }
+//
+//            @Override
+//            public void onError(Error error) {
+//                callbacListener.onError(error);
+//            }
+//        });
     }
 
 //    public static void getNewSesion(Activity activity, String authentication_id, DeviceObject deviceObject, final CallbacListener callbacListener) {

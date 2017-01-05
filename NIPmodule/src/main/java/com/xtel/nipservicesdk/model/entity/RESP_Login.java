@@ -12,6 +12,8 @@ public class RESP_Login extends RESP_Basic {
     @Expose
     public String session;
     @Expose
+    public int time_alive;
+    @Expose
     public long login_time;
     @Expose
     public long expired_time;
@@ -32,6 +34,14 @@ public class RESP_Login extends RESP_Basic {
         this.session = session;
     }
 
+    public int getTime_alive() {
+        return time_alive;
+    }
+
+    public void setTime_alive(int time_alive) {
+        this.time_alive = time_alive;
+    }
+
     public long getLogin_time() {
         return login_time;
     }
@@ -50,13 +60,12 @@ public class RESP_Login extends RESP_Basic {
 
     @Override
     public String toString() {
-        return "Login{" +
+        return "RESP_Login{" +
                 "authenticationid='" + authenticationid + '\'' +
                 ", session='" + session + '\'' +
+                ", time_alive=" + time_alive +
                 ", login_time=" + login_time +
                 ", expired_time=" + expired_time +
                 '}';
     }
-
-
 }

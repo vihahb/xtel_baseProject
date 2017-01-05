@@ -6,19 +6,25 @@ import com.google.gson.annotations.Expose;
  * Created by vihahb on 1/4/2017.
  */
 
-public class LoginNipModel extends AuthenNipModel {
+public class LoginNipModel {
     @Expose
-    private String user_name;
+    private String username;
 
     @Expose
     private String password;
 
-    public String getUser_name() {
-        return user_name;
+    @Expose
+    private String service_code;
+
+    @Expose
+    private DeviceObject devInfo;
+
+    public String getUsername() {
+        return username;
     }
 
-    public void setUser_name(String user_name) {
-        this.user_name = user_name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -29,5 +35,29 @@ public class LoginNipModel extends AuthenNipModel {
         this.password = password;
     }
 
+    public String getService_code() {
+        return service_code;
+    }
 
+    public void setService_code(String service_code) {
+        this.service_code = service_code;
+    }
+
+    public DeviceObject getDevInfo() {
+        return devInfo;
+    }
+
+    public void setDevInfo(DeviceObject devInfo) {
+        this.devInfo = devInfo;
+    }
+
+    @Override
+    public String toString() {
+        return "LoginNipModel{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", service_code='" + service_code + '\'' +
+                ", devInfo=" + devInfo +
+                '}';
+    }
 }

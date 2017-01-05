@@ -24,6 +24,7 @@ import com.xtel.nipservicesdk.model.entity.RESP_Reset;
 import com.xtel.nipservicesdk.model.entity.ReactiveNip;
 import com.xtel.nipservicesdk.model.entity.RegisterModel;
 import com.xtel.nipservicesdk.model.entity.ResetEntity;
+import com.xtel.nipservicesdk.utils.DeviceInfo;
 import com.xtel.nipservicesdk.utils.JsonHelper;
 import com.xtel.nipservicesdk.utils.PermissionHelper;
 import com.xtel.nipservicesdk.utils.SharedUtils;
@@ -37,6 +38,7 @@ import java.util.ArrayList;
 public class CallbackManager {
     public final int REQUEST_PERMISSION = 111;
     private CallbacListener callbacListener;
+    private CallbackLisenerRegister callbacListenerRegister;
     private Activity activity;
     private ArrayList<Object> object = new ArrayList<>();
 
@@ -58,7 +60,7 @@ public class CallbackManager {
                     }
                 });
             } else if ((Integer) object.get(0) == 2) {
-                LoginModel.getInstance().postFacebookData2Server((String) object.get(1), (String) object.get(1), new ResponseHandle<RESP_Login>(RESP_Login.class) {
+                LoginModel.getInstance().postFacebookData2Server((String) object.get(1), (String) object.get(2), new ResponseHandle<RESP_Login>(RESP_Login.class) {
                     @Override
                     public void onSuccess(RESP_Login obj) {
                         SharedUtils.getInstance().putStringValue(Constants.USER_AUTH_ID, obj.getAuthenticationid());
@@ -69,6 +71,44 @@ public class CallbackManager {
                     @Override
                     public void onError(Error error) {
                         callbacListener.onError(error);
+                    }
+                });
+            } else if ((Integer) object.get(0) == 3){
+                LoginModel.getInstance().postAccountKitData2Server((String) object.get(1), (String) object.get(2), new ResponseHandle<RESP_Login>(RESP_Login.class) {
+                    @Override
+                    public void onSuccess(RESP_Login obj) {
+                        SharedUtils.getInstance().putStringValue(Constants.USER_AUTH_ID, obj.getAuthenticationid());
+                        SharedUtils.getInstance().putStringValue(Constants.SESSION, obj.getSession());
+                        callbacListener.onSuccess(obj);
+                    }
+
+                    @Override
+                    public void onError(Error error) {
+                        callbacListener.onError(error);
+                    }
+                });
+            } else if ((Integer) object.get(0) == 4){
+                LoginModel.getInstance().loginNipServices((String) object.get(1), (String) object.get(2), (String) object.get(3), new ResponseHandle<RESP_Login>(RESP_Login.class) {
+                    @Override
+                    public void onSuccess(RESP_Login obj) {
+                        callbacListener.onSuccess(obj);
+                    }
+
+                    @Override
+                    public void onError(Error error) {
+                        callbacListener.onError(error);
+                    }
+                });
+            } else if ((Integer) object.get(0) == 5){
+                LoginModel.getInstance().registerAccountNip((String) object.get(1), (String) object.get(2), (String) object.get(3), (int) object.get(4), (String) object.get(5), (String) object.get(6), new ResponseHandle<RESP_Register>(RESP_Register.class) {
+                    @Override
+                    public void onSuccess(RESP_Register obj) {
+                        callbacListenerRegister.onSuccess(obj);
+                    }
+
+                    @Override
+                    public void onError(Error error) {
+                        callbacListenerRegister.onError(error);
                     }
                 });
             }
@@ -107,8 +147,9 @@ public class CallbackManager {
 
         object.clear();
         object.add(2);
-        object.add(token_key);
         object.add(service_code);
+        object.add(token_key);
+
 
         if (checkPermission())
             iCmd.execute();
@@ -133,72 +174,72 @@ public class CallbackManager {
 //        });
     }
 
-    public void LoginAccountKit(String authorization_code, DeviceObject deviceObject, final CallbacListener callbacListener) {
+    public void LoginAccountKit(String authorization_code, final CallbacListener callbacListener) {
         String service_code = LoginModel.getInstance().getServiceCode(activity);
-        AuthenNipModel accountKitModel = new AuthenNipModel();
-        accountKitModel.setAuthorization_code(authorization_code);
-        accountKitModel.setService_code(service_code);
-        accountKitModel.setDevInfo(deviceObject);
 
-        LoginModel.getInstance().postAccountKitData2Server(JsonHelper.toJson(accountKitModel), new ResponseHandle<RESP_Login>(RESP_Login.class) {
-            @Override
-            public void onSuccess(RESP_Login obj) {
-                SharedUtils.getInstance().putStringValue(Constants.USER_AUTH_ID, obj.getAuthenticationid());
-                SharedUtils.getInstance().putStringValue(Constants.SESSION, obj.getSession());
-                callbacListener.onSuccess(obj);
-            }
-
-            @Override
-            public void onError(Error error) {
-                callbacListener.onError(error);
-            }
-        });
-    }
-
-    public void LoginNipAcc(Activity activity, String user_name, String password, DeviceObject deviceObject, final CallbacListener callbacListener) {
-        String service_code = LoginModel.getInstance().getServiceCode(activity);
-        LoginNipModel loginNipModel = new LoginNipModel();
-        loginNipModel.setUser_name(user_name);
-        loginNipModel.setPassword(password);
-        loginNipModel.setService_code(service_code);
-        loginNipModel.setDevInfo(deviceObject);
-
-        LoginModel.getInstance().loginNipServices(JsonHelper.toJson(loginNipModel), new ResponseHandle<RESP_Login>(RESP_Login.class) {
-            @Override
-            public void onSuccess(RESP_Login obj) {
-                callbacListener.onSuccess(obj);
-            }
-
-            @Override
-            public void onError(Error error) {
-                callbacListener.onError(error);
-            }
-        });
-    }
-
-    public void registerNipService(String user_name, String password, String email, int sendMail, int type, final CallbackLisenerRegister callbacListener) {
-        RegisterModel registerNipModel = new RegisterModel();
-        registerNipModel.setUser_name(user_name);
-        registerNipModel.setPassword(password);
-        registerNipModel.setEmail(email);
-        registerNipModel.setSendEmail(sendMail);
-        if (type == 0) {
-            registerNipModel.setAccountType("EMAIL");
-        } else {
-            registerNipModel.setAccountType("PHONE-NUMBER");
+        if (service_code == null || service_code.isEmpty()) {
+            callbacListener.onError(new Error(-2, activity.getString(R.string.error), activity.getString(R.string.error_no_service_code)));
+            return;
         }
 
-        LoginModel.getInstance().registerAccountNip(JsonHelper.toJson(registerNipModel), new ResponseHandle<RESP_Register>(RESP_Register.class) {
-            @Override
-            public void onSuccess(RESP_Register obj) {
-                callbacListener.onSuccess(obj);
-            }
+        Log.e("TAG", "DFDFFDSFDSFDS");
 
-            @Override
-            public void onError(Error error) {
-                callbacListener.onError(error);
-            }
-        });
+        this.callbacListener = callbacListener;
+
+        object.clear();
+        object.add(3);
+        object.add(service_code);
+        object.add(authorization_code);
+
+
+        if (checkPermission())
+            iCmd.execute();
+    }
+
+    public void LoginNipAcc(Activity activity, String user_name, String password, final CallbacListener callbacListener) {
+        String service_code = LoginModel.getInstance().getServiceCode(activity);
+        if (service_code == null || service_code.isEmpty()) {
+            callbacListener.onError(new Error(-2, activity.getString(R.string.error), activity.getString(R.string.error_no_service_code)));
+            return;
+        }
+
+        Log.e("TAG", "DFDFFDSFDSFDS");
+
+        this.callbacListener = callbacListener;
+
+        object.clear();
+        object.add(4);
+        object.add(user_name);
+        object.add(password);
+        object.add(service_code);
+
+        if (checkPermission())
+            iCmd.execute();
+    }
+
+    public void registerNipService(String user_name, String password, String email, int sendMail, String type, final CallbackLisenerRegister callbackLisenerRegister) {
+        String service_code = LoginModel.getInstance().getServiceCode(activity);
+        if (service_code == null || service_code.isEmpty()) {
+            callbacListenerRegister.onError(new Error(-2, activity.getString(R.string.error), activity.getString(R.string.error_no_service_code)));
+            return;
+        }
+
+        Log.e("TAG", "DFDFFDSFDSFDS");
+
+        this.callbacListenerRegister = callbackLisenerRegister;
+
+        object.clear();
+        object.add(5);
+        object.add(user_name);
+        object.add(password);
+        object.add(email);
+        object.add(sendMail);
+        object.add(type);
+        object.add(service_code);
+
+        if (checkPermission())
+            iCmd.execute();
+
     }
 
     public void resetNipAccount(String email, int sendEmail, final CallbackListenerReset callbacListener) {
