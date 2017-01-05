@@ -25,4 +25,9 @@ public class Constants {
     public static final String API_FACEBOOK = "v1.0/m/user/fb/login";
     public static final String API_ACCOUNT_KIT = "v1.0/m/user/accountkit/login";
     public static final String API_SESSION_AUTHENTICATE = "v1.0/m/user/authenticate";
+    public static final String AUTHEN_AUTHENTICATE = "v1.0/m/user/authenticate";
+    public static final String USER_AUTH_ID = "user_auth_id";
+
+//    Meta-data
+    public static final String META_DATA_NAME = "xtel_service_code";
 }

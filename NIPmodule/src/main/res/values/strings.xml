@@ -3,4 +3,5 @@
 
     <string name="error">ERROR</string>
     <string name="can_not_request">Không thể kết nối tới Server</string>
+    <string name="error_no_service_code">Không tìm thấy service code</string>
 </resources>

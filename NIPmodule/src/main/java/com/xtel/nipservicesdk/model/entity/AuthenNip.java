@@ -3,33 +3,23 @@ package com.xtel.nipservicesdk.model.entity;
 import com.google.gson.annotations.Expose;
 
 /**
- * Created by vivhp on 12/9/2016.
+ * Created by Lê Công Long Vũ on 1/5/2017
  */
 
-public class AuthenNipModel {
+public class AuthenNip {
     @Expose
-    private String access_token_key;
-    @Expose
-    private String authorization_code;
+    private String authenticationid;
     @Expose
     private String service_code;
     @Expose
     private DeviceObject devInfo;
 
-    public String getAccess_token_key() {
-        return access_token_key;
+    public String getAuthenticationid() {
+        return authenticationid;
     }
 
-    public void setAccess_token_key(String access_token_key) {
-        this.access_token_key = access_token_key;
-    }
-
-    public String getAuthorization_code() {
-        return authorization_code;
-    }
-
-    public void setAuthorization_code(String authorization_code) {
-        this.authorization_code = authorization_code;
+    public void setAuthenticationid(String authenticationid) {
+        this.authenticationid = authenticationid;
     }
 
     public String getService_code() {

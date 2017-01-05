@@ -2,13 +2,13 @@
     package="com.xtel.nipservicesdk">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-
     </application>
 
 </manifest>
