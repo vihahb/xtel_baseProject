@@ -92,7 +92,7 @@ public class LoginModel extends BasicModel {
         resetEntity.setService_code(service_code);
 
         if (isPhone) {
-            resetEntity.setUsename(email);
+//            resetEntity.setUsename(email);
             resetEntity.setSendMail(0);
             resetEntity.setAccountType("PHONE-NUMBER");
             resetEntity.setPassword(password);
