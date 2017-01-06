@@ -2,6 +2,8 @@ package com.xtel.nipservicesdk;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -20,6 +22,9 @@ import com.xtel.nipservicesdk.model.entity.RESP_None;
 import com.xtel.nipservicesdk.model.entity.RESP_Reactive;
 import com.xtel.nipservicesdk.model.entity.RESP_Register;
 import com.xtel.nipservicesdk.model.entity.RESP_Reset;
+import com.xtel.nipservicesdk.model.entity.ReactiveNip;
+import com.xtel.nipservicesdk.model.entity.ResetEntity;
+import com.xtel.nipservicesdk.utils.JsonHelper;
 import com.xtel.nipservicesdk.utils.PermissionHelper;
 import com.xtel.nipservicesdk.utils.SharedUtils;
 
@@ -30,7 +35,7 @@ import java.util.ArrayList;
  */
 
 public class CallbackManager {
-    public final int REQUEST_PERMISSION = 111;
+    private final int REQUEST_PERMISSION = 111;
     private CallbacListener callbacListener;
     private CallbackLisenerRegister callbacListenerRegister;
     private CallbackListenerReset callbackListenerReset;
@@ -46,25 +51,32 @@ public class CallbackManager {
                 LoginModel.getInstance().getNewSession((String) object.get(1), new ResponseHandle<RESP_Login>(RESP_Login.class) {
                     @Override
                     public void onSuccess(RESP_Login obj) {
-                        callbacListener.onSuccess(obj);
+                        saveLoginInfo(obj);
+                        Log.e("newsession", JsonHelper.toJson(obj));
+
+                        if (callbacListener != null)
+                            callbacListener.onSuccess(obj);
                     }
 
                     @Override
                     public void onError(Error error) {
-                        callbacListener.onError(error);
+                        Log.e("newsession", JsonHelper.toJson(error));
+                        if (callbacListener != null)
+                            callbacListener.onError(error);
                     }
                 });
             } else if ((Integer) object.get(0) == 2) {
                 LoginModel.getInstance().postFacebookData2Server((String) object.get(1), (String) object.get(2), new ResponseHandle<RESP_Login>(RESP_Login.class) {
                     @Override
                     public void onSuccess(RESP_Login obj) {
-                        SharedUtils.getInstance().putStringValue(Constants.USER_AUTH_ID, obj.getAuthenticationid());
-                        SharedUtils.getInstance().putStringValue(Constants.SESSION, obj.getSession());
+                        Log.e("loginface", JsonHelper.toJson(obj));
+                        saveLoginInfo(obj);
                         callbacListener.onSuccess(obj);
                     }
 
                     @Override
                     public void onError(Error error) {
+                        Log.e("loginface_error", JsonHelper.toJson(error));
                         callbacListener.onError(error);
                     }
                 });
@@ -72,13 +84,14 @@ public class CallbackManager {
                 LoginModel.getInstance().postAccountKitData2Server((String) object.get(1), (String) object.get(2), new ResponseHandle<RESP_Login>(RESP_Login.class) {
                     @Override
                     public void onSuccess(RESP_Login obj) {
-                        SharedUtils.getInstance().putStringValue(Constants.USER_AUTH_ID, obj.getAuthenticationid());
-                        SharedUtils.getInstance().putStringValue(Constants.SESSION, obj.getSession());
+                        Log.e("newsession", JsonHelper.toJson(obj));
+                        saveLoginInfo(obj);
                         callbacListener.onSuccess(obj);
                     }
 
                     @Override
                     public void onError(Error error) {
+                        Log.e("newsession", JsonHelper.toJson(error));
                         callbacListener.onError(error);
                     }
                 });
@@ -125,6 +138,7 @@ public class CallbackManager {
 
     private CallbackManager(Activity activity) {
         this.activity = activity;
+        checkLogedTime();
     }
 
     public static CallbackManager create(Activity activity) {
@@ -137,7 +151,8 @@ public class CallbackManager {
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_PERMISSION) {
-            iCmd.execute();
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                iCmd.execute();
         }
     }
 
@@ -319,6 +334,41 @@ public class CallbackManager {
                 callbacListener.onError(error);
             }
         });
+    }
+
+    private void saveLoginInfo(RESP_Login obj) {
+        SharedUtils.getInstance().putStringValue(Constants.SESSION, obj.getSession());
+        SharedUtils.getInstance().putLongValue(Constants.TIME_ALIVE, (obj.getTime_alive() * 60));
+        SharedUtils.getInstance().putLongValue(Constants.BEGIN_TIME, System.currentTimeMillis());
+
+        if (obj.getAuthenticationid() != null && !obj.getAuthenticationid().isEmpty())
+            SharedUtils.getInstance().putStringValue(Constants.USER_AUTH_ID, obj.getAuthenticationid());
+        SharedUtils.getInstance().putStringValue(Constants.SESSION, obj.getSession());
+
+        checkLogedTime();
+    }
+
+    private void checkLogedTime() {
+        final long current_time = System.currentTimeMillis();
+        long begin_time = SharedUtils.getInstance().getLongValue(Constants.BEGIN_TIME);
+        long time_alive = SharedUtils.getInstance().getLongValue(Constants.TIME_ALIVE);
+        final long total_time = begin_time + time_alive;
+
+        if (time_alive <= 0) {
+            return;
+        }
+
+        if (current_time > total_time) {
+            if (checkPermission())
+                getNewSesion(null);
+        } else {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    getNewSesion(null);
+                }
+            }, (total_time - current_time));
+        }
     }
 
     public void getNewSesion(final CallbacListener callbacListener) {

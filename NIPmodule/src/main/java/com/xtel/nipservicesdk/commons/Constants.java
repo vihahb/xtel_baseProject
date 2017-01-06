@@ -7,6 +7,8 @@ package com.xtel.nipservicesdk.commons;
 public class Constants {
     public static final String SHARED_NAME = "nip_service_sdk";
     public static final String SESSION = "session";
+    public static final String BEGIN_TIME = "begin_time";
+    public static final String TIME_ALIVE = "time_alive";
     public static final String CODE = "code";
     public static final String TYPE = "type";
     public static final String MESSAGE = "message";
