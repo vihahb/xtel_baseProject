@@ -138,7 +138,6 @@ public class CallbackManager {
 
     private CallbackManager(Activity activity) {
         this.activity = activity;
-        checkLogedTime();
     }
 
     public static CallbackManager create(Activity activity) {
@@ -345,49 +344,49 @@ public class CallbackManager {
             SharedUtils.getInstance().putStringValue(Constants.USER_AUTH_ID, obj.getAuthenticationid());
         SharedUtils.getInstance().putStringValue(Constants.SESSION, obj.getSession());
 
-        checkLogedTime();
+//        checkLogedTime();
     }
 
-    private void checkLogedTime() {
-        final long current_time = System.currentTimeMillis();
-        long begin_time = SharedUtils.getInstance().getLongValue(Constants.BEGIN_TIME);
-        long time_alive = SharedUtils.getInstance().getLongValue(Constants.TIME_ALIVE);
-        final long total_time = begin_time + time_alive;
+//    private void checkLogedTime() {
+//        final long current_time = System.currentTimeMillis();
+//        long begin_time = SharedUtils.getInstance().getLongValue(Constants.BEGIN_TIME);
+//        long time_alive = SharedUtils.getInstance().getLongValue(Constants.TIME_ALIVE);
+//        final long total_time = begin_time + time_alive;
+//
+//        if (time_alive <= 0) {
+//            return;
+//        }
+//
+//        if (current_time > total_time) {
+//            if (checkPermission())
+//                getNewSesion(null);
+//        } else {
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    getNewSesion(null);
+//                }
+//            }, (total_time - current_time));
+//        }
+//    }
 
-        if (time_alive <= 0) {
-            return;
-        }
-
-        if (current_time > total_time) {
-            if (checkPermission())
-                getNewSesion(null);
-        } else {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    getNewSesion(null);
-                }
-            }, (total_time - current_time));
-        }
-    }
-
-    public void getNewSesion(final CallbacListener callbacListener) {
-        String service_code = LoginModel.getInstance().getServiceCode(activity);
-
-        if (service_code == null || service_code.isEmpty()) {
-            callbacListener.onError(new Error(-2, activity.getString(R.string.error), activity.getString(R.string.error_no_service_code)));
-            return;
-        }
-
-        this.callbacListener = callbacListener;
-
-        object.clear();
-        object.add(1);
-        object.add(service_code);
-
-        if (checkPermission())
-            iCmd.execute();
-    }
+//    public void getNewSesion(final CallbacListener callbacListener) {
+//        String service_code = LoginModel.getInstance().getServiceCode(activity);
+//
+//        if (service_code == null || service_code.isEmpty()) {
+//            callbacListener.onError(new Error(-2, activity.getString(R.string.error), activity.getString(R.string.error_no_service_code)));
+//            return;
+//        }
+//
+//        this.callbacListener = callbacListener;
+//
+//        object.clear();
+//        object.add(1);
+//        object.add(service_code);
+//
+//        if (checkPermission())
+//            iCmd.execute();
+//    }
 
     private boolean checkPermission() {
         return PermissionHelper.checkOnlyPermission(Manifest.permission.READ_PHONE_STATE, activity, REQUEST_PERMISSION);
