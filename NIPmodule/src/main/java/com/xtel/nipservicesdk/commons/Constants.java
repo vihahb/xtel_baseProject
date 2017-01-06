@@ -29,6 +29,7 @@ public class Constants {
     public static final String API_SESSION_AUTHENTICATE = "v1.0/m/user/authenticate";
     public static final String API_REGISTER_NIP = "v1.0/g/user";
     public static final String API_LOGIN_ACC_NIP = "v1.0/m/user/login";
+    public static final String API_ACTIVE_ACCOUNT = "v1.0/g/user/active";
     public static final String API_RE_ACTIVE_ACC_NIP = "v1.0/g/user";
     public static final String API_RESET_ACC_NIP = "v1.0/g/user/reset-pwd";
 
@@ -45,6 +46,7 @@ public class Constants {
 
 
     public static final String USER_AUTH_ID = "user_auth_id";
+    public static final String USER_ACTIVATION_CODE = "user_activation_code";
 
 //    Meta-data
     public static final String META_DATA_NAME = "xtel_service_code";

@@ -1,6 +1,9 @@
 package com.xtel.nipservicesdk.callback;
 
+import android.util.Log;
+
 import com.xtel.nipservicesdk.model.entity.RESP_Basic;
+import com.xtel.nipservicesdk.model.entity.RESP_None;
 import com.xtel.nipservicesdk.utils.JsonHelper;
 import com.xtel.nipservicesdk.model.entity.Error;
 
@@ -18,12 +21,13 @@ public abstract class ResponseHandle<T extends RESP_Basic> {
     }
 
     public void onSuccess(String result) {
+        Log.e("ResponHandle", "null k: " + result);
         try {
             boolean isJson;
             isJson = !(result == null || result.isEmpty());
 
             if (!isJson) {
-//                onSuccess((T) new RESP_Parking_Info());
+                onSuccess((T) new RESP_None());
             } else {
                 T t = JsonHelper.getObjectNoException(result, clazz);
                 if (t.getError() != null) {

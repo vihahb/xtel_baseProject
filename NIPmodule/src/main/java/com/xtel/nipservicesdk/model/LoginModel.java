@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.xtel.nipservicesdk.callback.ResponseHandle;
 import com.xtel.nipservicesdk.commons.Constants;
+import com.xtel.nipservicesdk.model.entity.ActiveNip;
 import com.xtel.nipservicesdk.model.entity.AuthenNip;
 import com.xtel.nipservicesdk.model.entity.AuthenNipModel;
 import com.xtel.nipservicesdk.model.entity.LoginNipModel;
@@ -104,6 +105,19 @@ public class LoginModel extends BasicModel {
 
         String url_authen = Constants.URL_NIP + Constants.API_SESSION_AUTHENTICATE;
         requestServer.postApi(url_authen, JsonHelper.toJson(authenNip), null, responseHandle);
+    }
+
+    public void activeAccount(String authorization_code, String accountType, ResponseHandle responseHandle) {
+        String url_active = Constants.URL_NIP + Constants.API_ACTIVE_ACCOUNT;
+        ActiveNip activeNip = new ActiveNip();
+        activeNip.setAuthorization_code(authorization_code);
+        activeNip.setActivation_code(SharedUtils.getInstance().getStringValue(Constants.USER_ACTIVATION_CODE));
+        activeNip.setAccountType(accountType);
+
+        Log.e("active", "object " + JsonHelper.toJson(activeNip));
+        Log.e("active", "url " + url_active);
+
+        requestServer.postApi(url_active, JsonHelper.toJson(activeNip), null, responseHandle);
     }
 
     public String getServiceCode(Activity activity) {

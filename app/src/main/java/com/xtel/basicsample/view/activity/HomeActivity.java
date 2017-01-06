@@ -14,16 +14,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 
 import com.xtel.basicsample.R;
 import com.xtel.basicsample.presenter.HomePresenter;
 import com.xtel.basicsample.view.activity.inf.IHome;
 import com.xtel.nipservicesdk.CallbackManager;
+import com.xtel.nipservicesdk.callback.CallbackListenerActive;
 import com.xtel.nipservicesdk.callback.CallbacListener;
 import com.xtel.nipservicesdk.callback.CallbackLisenerRegister;
 import com.xtel.nipservicesdk.model.entity.Error;
 import com.xtel.nipservicesdk.model.entity.RESP_Login;
 import com.xtel.nipservicesdk.model.entity.RESP_Register;
+import com.xtel.nipservicesdk.utils.JsonHelper;
 
 
 /**
@@ -33,6 +36,7 @@ import com.xtel.nipservicesdk.model.entity.RESP_Register;
 public class HomeActivity extends BasicActivity implements NavigationView.OnNavigationItemSelectedListener, IHome {
     HomePresenter presenter;
 
+    EditText editText;
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
@@ -48,6 +52,8 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
         presenter = new HomePresenter(this);
         initView();
         initNavigation();
+
+        editText = (EditText) findViewById(R.id.phone);
     }
 
     @Override
@@ -71,7 +77,20 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
 //        onLoginAccountKit();
 //        onLoginUser();
 
+//        onRegisterNip();
+//        activeAccount();
+    }
+
+    public void Register(View view) {
         onRegisterNip();
+    }
+
+    public void Active(View view) {
+        activeAccount();
+    }
+
+    public void ReActive(View view) {
+
     }
 
     @SuppressWarnings("deprecation")
@@ -101,7 +120,6 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
                 Log.e("Error code: + ", String.valueOf(error.getCode()));
             }
         });
-
     }
 
     private void onLoginUser(){
@@ -143,22 +161,37 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
     }
 
     private void onRegisterNip(){
-        String user_name = "vuhavi";
+        String user_name = editText.getText().toString();
         String password = "123456";
-        String email = "vivhph03579@fpt.edu.vn";
-        int sendmail = 1;
-        String type = "EMAIL";
+        String email = "";
+        int sendmail = 0;
+        String type = "PHONE-NUMBER";
         callbackManager.registerNipService(user_name, password, email, sendmail, type, new CallbackLisenerRegister() {
             @Override
             public void onSuccess(RESP_Register register) {
-                Log.e("Activation_code nip", register.getActivation_code());
+                Log.e("Activation_code nip", JsonHelper.toJson(register));
             }
 
             @Override
             public void onError(Error error) {
-                Log.e("Error reg nip: + ", error.getMessage());
-                Log.e("Error reg code nip: + ", String.valueOf(error.getCode()));
-                Log.e("Object reg Err", error.toString());
+                Log.e("Object reg Err", JsonHelper.toJson(error));
+            }
+        });
+    }
+
+    private void activeAccount() {
+        String auth_code = "AQCHNVx3KKxbZvZsPW8uqt5rqjG6qAYpLLKs28EUWf8O8Tv0EOHVxAuukVURtIrBB-VGPsSPnrzcglGDVBgdMaDWSlmhOjCn7hU3qjcnCF_-_2M6UA9GuYlM-kEWsejXjOb-u2Gl9k-zQMZtqPUhnbierQ2eusRHye__c7enEr9yRM1K-P23Kpr1MAJgZJhQ_6_l9has4h4DApvpeORHGd0BCMwzb43IrPtqTOkSQd-HE15QZUE3cS01jiT-Ggqd7bHT64Q7UXEWSAqRqPprlO_O";
+        String type = "PHONE-NUMBER";
+
+        callbackManager.activeNipAccount(auth_code, type, new CallbackListenerActive() {
+            @Override
+            public void onSuccess() {
+                Log.e("active", "ok");
+            }
+
+            @Override
+            public void onError(Error error) {
+                Log.e("active", JsonHelper.toJson(error));
             }
         });
     }

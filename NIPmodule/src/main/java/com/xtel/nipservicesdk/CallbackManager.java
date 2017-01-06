@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.xtel.nipservicesdk.callback.CallbackListenerActive;
 import com.xtel.nipservicesdk.callback.CallbacListener;
 import com.xtel.nipservicesdk.callback.CallbackLisenerRegister;
 import com.xtel.nipservicesdk.callback.CallbackListenerReactive;
@@ -13,18 +14,14 @@ import com.xtel.nipservicesdk.callback.ICmd;
 import com.xtel.nipservicesdk.callback.ResponseHandle;
 import com.xtel.nipservicesdk.commons.Constants;
 import com.xtel.nipservicesdk.model.LoginModel;
-import com.xtel.nipservicesdk.model.entity.AuthenNipModel;
-import com.xtel.nipservicesdk.model.entity.DeviceObject;
 import com.xtel.nipservicesdk.model.entity.Error;
-import com.xtel.nipservicesdk.model.entity.LoginNipModel;
 import com.xtel.nipservicesdk.model.entity.RESP_Login;
+import com.xtel.nipservicesdk.model.entity.RESP_None;
 import com.xtel.nipservicesdk.model.entity.RESP_Reactive;
 import com.xtel.nipservicesdk.model.entity.RESP_Register;
 import com.xtel.nipservicesdk.model.entity.RESP_Reset;
 import com.xtel.nipservicesdk.model.entity.ReactiveNip;
-import com.xtel.nipservicesdk.model.entity.RegisterModel;
 import com.xtel.nipservicesdk.model.entity.ResetEntity;
-import com.xtel.nipservicesdk.utils.DeviceInfo;
 import com.xtel.nipservicesdk.utils.JsonHelper;
 import com.xtel.nipservicesdk.utils.PermissionHelper;
 import com.xtel.nipservicesdk.utils.SharedUtils;
@@ -103,6 +100,7 @@ public class CallbackManager {
                 LoginModel.getInstance().registerAccountNip((String) object.get(1), (String) object.get(2), (String) object.get(3), (int) object.get(4), (String) object.get(5), (String) object.get(6), new ResponseHandle<RESP_Register>(RESP_Register.class) {
                     @Override
                     public void onSuccess(RESP_Register obj) {
+                        SharedUtils.getInstance().putStringValue(Constants.USER_ACTIVATION_CODE, obj.getActivation_code());
                         callbacListenerRegister.onSuccess(obj);
                     }
 
@@ -153,25 +151,6 @@ public class CallbackManager {
 
         if (checkPermission())
             iCmd.execute();
-
-//        AuthenNipModel facebookModel = new AuthenNipModel();
-//        facebookModel.setAccess_token_key(token_key);
-//        facebookModel.setService_code(service_code);
-//        facebookModel.setDevInfo(DeviceInfo.getDeviceObject());
-
-//        LoginModel.getInstance().postFacebookData2Server(JsonHelper.toJson(facebookModel), new ResponseHandle<RESP_Login>(RESP_Login.class) {
-//            @Override
-//            public void onSuccess(RESP_Login obj) {
-//                SharedUtils.getInstance().putStringValue(Constants.USER_AUTH_ID, obj.getAuthenticationid());
-//                SharedUtils.getInstance().putStringValue(Constants.SESSION, obj.getSession());
-//                callbacListener.onSuccess(obj);
-//            }
-//
-//            @Override
-//            public void onError(Error error) {
-//                callbacListener.onError(error);
-//            }
-//        });
     }
 
     public void LoginAccountKit(String authorization_code, final CallbacListener callbacListener) {
@@ -260,6 +239,20 @@ public class CallbackManager {
             @Override
             public void onError(Error error) {
                 callbacListener.onError(error);
+            }
+        });
+    }
+
+    public void activeNipAccount(String authorization_code, String accountType, final CallbackListenerActive callbackListenerActive) {
+        LoginModel.getInstance().activeAccount(authorization_code, accountType, new ResponseHandle<RESP_None>(RESP_None.class) {
+            @Override
+            public void onSuccess(RESP_None obj) {
+                callbackListenerActive.onSuccess();
+            }
+
+            @Override
+            public void onError(Error error) {
+                callbackListenerActive.onError(error);
             }
         });
     }
