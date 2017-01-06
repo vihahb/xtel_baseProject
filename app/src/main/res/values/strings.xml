@@ -25,4 +25,9 @@
     <string name="error_code_1001">Bãi đỗ không tồn tại</string>
 
     <string name="key">fDFSFSF</string>
+
+
+    <string name="service_code_key">XTEL-SDK</string>
+
+
 </resources>

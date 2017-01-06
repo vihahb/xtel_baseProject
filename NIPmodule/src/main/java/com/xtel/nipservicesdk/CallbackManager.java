@@ -5,9 +5,9 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.xtel.nipservicesdk.callback.CallbackListenerActive;
 import com.xtel.nipservicesdk.callback.CallbacListener;
 import com.xtel.nipservicesdk.callback.CallbackLisenerRegister;
+import com.xtel.nipservicesdk.callback.CallbackListenerActive;
 import com.xtel.nipservicesdk.callback.CallbackListenerReactive;
 import com.xtel.nipservicesdk.callback.CallbackListenerReset;
 import com.xtel.nipservicesdk.callback.ICmd;
@@ -175,7 +175,7 @@ public class CallbackManager {
             iCmd.execute();
     }
 
-    public void LoginNipAcc(Activity activity, String user_name, String password, final CallbacListener callbacListener) {
+    public void LoginNipAcc(String user_name, String password, final CallbacListener callbacListener) {
         String service_code = LoginModel.getInstance().getServiceCode(activity);
         if (service_code == null || service_code.isEmpty()) {
             callbacListener.onError(new Error(-2, activity.getString(R.string.error), activity.getString(R.string.error_no_service_code)));
