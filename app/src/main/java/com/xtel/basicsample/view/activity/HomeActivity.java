@@ -20,9 +20,9 @@ import com.xtel.basicsample.R;
 import com.xtel.basicsample.presenter.HomePresenter;
 import com.xtel.basicsample.view.activity.inf.IHome;
 import com.xtel.nipservicesdk.CallbackManager;
-import com.xtel.nipservicesdk.callback.CallbackListenerActive;
 import com.xtel.nipservicesdk.callback.CallbacListener;
 import com.xtel.nipservicesdk.callback.CallbackLisenerRegister;
+import com.xtel.nipservicesdk.callback.CallbackListenerActive;
 import com.xtel.nipservicesdk.model.entity.Error;
 import com.xtel.nipservicesdk.model.entity.RESP_Login;
 import com.xtel.nipservicesdk.model.entity.RESP_Register;
@@ -35,8 +35,7 @@ import com.xtel.nipservicesdk.utils.JsonHelper;
 
 public class HomeActivity extends BasicActivity implements NavigationView.OnNavigationItemSelectedListener, IHome {
     HomePresenter presenter;
-
-    EditText editText;
+    private EditText editText;
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
@@ -107,7 +106,7 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
     }
 
     private void onLogin() {
-        String accessTokent = "EAAXEtiHaSw0BAKyVoQLPz5BZA6Wwy3ihK4cLKE9vIORTA6KljLvoH48c0iRQC9ZAY6UT2ZAWFe7H5UZBZBUCp3cAzQ9x0QGHmo5si6RyxSZCCNvhvkaZBuZCXaPYcRoTZCq2vkXsBXKsp6V8MOwosjRaGDBB1OWGHmMKr5kBmBRsWMP0LoKZC0lbhcNGhd8Uv6v7ZCepSFZCayXPwjO7m2aurJ3R";
+        String accessTokent = "YOUR_ACCESS_TOKEN_KEY";
         callbackManager.LoginFaceook(accessTokent, new CallbacListener() {
             @Override
             public void onSuccess(RESP_Login success) {
@@ -120,6 +119,7 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
                 Log.e("Error code: + ", String.valueOf(error.getCode()));
             }
         });
+
     }
 
     private void onLoginUser(){
@@ -127,11 +127,11 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
         String password = "123456";
 
 
-        callbackManager.LoginNipAcc(this, user_name, password, new CallbacListener() {
+        callbackManager.LoginNipAcc(user_name, password, new CallbacListener() {
             @Override
             public void onSuccess(RESP_Login success) {
                 Log.e("Session nip", success.getSession());
-                Log.e("Time alive nip", String.valueOf(success.getTime_alive()));
+//                Log.e("Time alive nip", String.valueOf(success.getTime_alive()));
                 Log.e("Object ", success.toString());
             }
 
@@ -145,7 +145,7 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
     }
 
     private void onLoginAccountKit(){
-        String authorization_code = "AQBQpuOcCDcwR1rawzkuQLO3qXrUahGK1ikN-ht_sinqMMsdVrfBgakVM95FyVeVv8r514D5n-mNPrCrAbtXSOy7o4ejxp8_pwZg4etZKMuoIP798gpicLNZweBN4IJYC3vzlNOZHGJQJpWEhO6I3HYoDOfKdXGf3XzJ8RNJ3C8YsZEu8QMKYKccrOqfGsDWmIsNpi_F_h1RVvPkyonDVMZFbPIy3iumRvcG3AWMyagq7b-_jhbZwPwkKIYGsuDFCwdZ5C4FKhERkBadXrj7z-wi";
+        String authorization_code = "YOUR_AUTHORIZATION_CODE";
         callbackManager.LoginAccountKit(authorization_code, new CallbacListener() {
             @Override
             public void onSuccess(RESP_Login success) {
@@ -192,6 +192,8 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
             @Override
             public void onError(Error error) {
                 Log.e("active", JsonHelper.toJson(error));
+                Log.e("Error reg code nip: + ", String.valueOf(error.getCode()));
+//                Log.e("Object reg Err", error.toString());
             }
         });
     }
