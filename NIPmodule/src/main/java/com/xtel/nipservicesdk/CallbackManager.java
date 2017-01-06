@@ -257,22 +257,15 @@ public class CallbackManager {
         });
     }
 
-    public void reactiveNipAccount(String user_name, int sendMail, int accountType, final CallbackListenerReactive callbacListener) {
+    public void reactiveNipAccount(String user_name, boolean isPhone, final CallbackListenerReactive callbacListener) {
         String service_code = LoginModel.getInstance().getServiceCode(activity);
-        ReactiveNip reactiveNip = new ReactiveNip();
-        reactiveNip.setUsername(user_name);
-        reactiveNip.setService_code(service_code);
-        if (sendMail == 1) {
-            reactiveNip.setSendMail(1);
-        } else
-            reactiveNip.setSendMail(0);
 
-        if (accountType == 1) {
-            reactiveNip.setAccountType("EMAIL");
-        } else
-            reactiveNip.setAccountType("PHONE-NUMBER");
+        if (service_code == null || service_code.isEmpty()) {
+            callbacListener.onError(new Error(-2, activity.getString(R.string.error), activity.getString(R.string.error_no_service_code)));
+            return;
+        }
 
-        LoginModel.getInstance().reactiveNipAccoint(JsonHelper.toJson(reactiveNip), new ResponseHandle<RESP_Reactive>(RESP_Reactive.class) {
+        LoginModel.getInstance().reactiveNipAccoint(user_name, service_code, isPhone, new ResponseHandle<RESP_Reactive>(RESP_Reactive.class) {
             @Override
             public void onSuccess(RESP_Reactive obj) {
                 callbacListener.onSuccess(obj);

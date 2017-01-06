@@ -20,11 +20,13 @@ import com.xtel.basicsample.R;
 import com.xtel.basicsample.presenter.HomePresenter;
 import com.xtel.basicsample.view.activity.inf.IHome;
 import com.xtel.nipservicesdk.CallbackManager;
-import com.xtel.nipservicesdk.callback.CallbackListenerActive;
 import com.xtel.nipservicesdk.callback.CallbacListener;
 import com.xtel.nipservicesdk.callback.CallbackLisenerRegister;
+import com.xtel.nipservicesdk.callback.CallbackListenerActive;
+import com.xtel.nipservicesdk.callback.CallbackListenerReactive;
 import com.xtel.nipservicesdk.model.entity.Error;
 import com.xtel.nipservicesdk.model.entity.RESP_Login;
+import com.xtel.nipservicesdk.model.entity.RESP_Reactive;
 import com.xtel.nipservicesdk.model.entity.RESP_Register;
 import com.xtel.nipservicesdk.utils.JsonHelper;
 
@@ -36,11 +38,13 @@ import com.xtel.nipservicesdk.utils.JsonHelper;
 public class HomeActivity extends BasicActivity implements NavigationView.OnNavigationItemSelectedListener, IHome {
     HomePresenter presenter;
 
-    EditText editText;
+    private EditText editText;
+    private boolean isPhone = true;
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private CallbackManager callbackManager;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +58,13 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
         initNavigation();
 
         editText = (EditText) findViewById(R.id.phone);
+    }
+
+    public void RadioButton(View view) {
+        if (view.getId() == R.id.rd_phone)
+            isPhone = true;
+        else
+            isPhone = false;
     }
 
     @Override
@@ -73,12 +84,6 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
                 showSnackBarShort(v, "Replace Message....");
             }
         });
-//        onLogin();
-//        onLoginAccountKit();
-//        onLoginUser();
-
-//        onRegisterNip();
-//        activeAccount();
     }
 
     public void Register(View view) {
@@ -90,7 +95,18 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
     }
 
     public void ReActive(View view) {
+        String username = editText.getText().toString();
+        callbackManager.reactiveNipAccount(username, isPhone, new CallbackListenerReactive() {
+            @Override
+            public void onSuccess(RESP_Reactive reactive) {
+                Log.e("reactive", JsonHelper.toJson(reactive));
+            }
 
+            @Override
+            public void onError(Error error) {
+                Log.e("reactive", JsonHelper.toJson(error));
+            }
+        });
     }
 
     @SuppressWarnings("deprecation")
@@ -122,7 +138,7 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
         });
     }
 
-    private void onLoginUser(){
+    private void onLoginUser() {
         String user_name = "01673378303";
         String password = "123456";
 
@@ -144,7 +160,7 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
         });
     }
 
-    private void onLoginAccountKit(){
+    private void onLoginAccountKit() {
         String authorization_code = "AQBQpuOcCDcwR1rawzkuQLO3qXrUahGK1ikN-ht_sinqMMsdVrfBgakVM95FyVeVv8r514D5n-mNPrCrAbtXSOy7o4ejxp8_pwZg4etZKMuoIP798gpicLNZweBN4IJYC3vzlNOZHGJQJpWEhO6I3HYoDOfKdXGf3XzJ8RNJ3C8YsZEu8QMKYKccrOqfGsDWmIsNpi_F_h1RVvPkyonDVMZFbPIy3iumRvcG3AWMyagq7b-_jhbZwPwkKIYGsuDFCwdZ5C4FKhERkBadXrj7z-wi";
         callbackManager.LoginAccountKit(authorization_code, new CallbacListener() {
             @Override
@@ -160,12 +176,22 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
         });
     }
 
-    private void onRegisterNip(){
+    private void onRegisterNip() {
         String user_name = editText.getText().toString();
         String password = "123456";
         String email = "";
-        int sendmail = 0;
-        String type = "PHONE-NUMBER";
+        int sendmail;
+        String type;
+
+        if (isPhone) {
+            sendmail = 0;
+            type = "PHONE-NUMBER";
+        } else {
+            sendmail = 1;
+            type = "EMAIL";
+            email = editText.getText().toString();
+        }
+
         callbackManager.registerNipService(user_name, password, email, sendmail, type, new CallbackLisenerRegister() {
             @Override
             public void onSuccess(RESP_Register register) {

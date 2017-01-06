@@ -9,6 +9,8 @@ import com.google.gson.annotations.Expose;
 public class RESP_Reactive extends RESP_Basic {
     @Expose
     private String active_url;
+    @Expose
+    private String activation_code;
 
     public String getActive_url() {
         return active_url;
@@ -16,6 +18,14 @@ public class RESP_Reactive extends RESP_Basic {
 
     public void setActive_url(String active_url) {
         this.active_url = active_url;
+    }
+
+    public String getActivation_code() {
+        return activation_code;
+    }
+
+    public void setActivation_code(String activation_code) {
+        this.activation_code = activation_code;
     }
 
     @Override

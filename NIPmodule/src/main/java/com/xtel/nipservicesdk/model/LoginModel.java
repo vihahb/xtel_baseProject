@@ -16,6 +16,7 @@ import com.xtel.nipservicesdk.model.entity.RESP_Login;
 import com.xtel.nipservicesdk.model.entity.RESP_Reactive;
 import com.xtel.nipservicesdk.model.entity.RESP_Register;
 import com.xtel.nipservicesdk.model.entity.RESP_Reset;
+import com.xtel.nipservicesdk.model.entity.ReactiveNip;
 import com.xtel.nipservicesdk.model.entity.RegisterModel;
 import com.xtel.nipservicesdk.utils.DeviceInfo;
 import com.xtel.nipservicesdk.utils.JsonHelper;
@@ -31,7 +32,6 @@ public class LoginModel extends BasicModel {
     String url_account_kit = Constants.URL_NIP + Constants.API_ACCOUNT_KIT;
     String url_sesion_authenticate = Constants.URL_NIP + Constants.API_SESSION_AUTHENTICATE;
     String url_reg_nip_acc = Constants.URL_NIP + Constants.API_REGISTER_NIP;
-    String url_reactive = Constants.URL_NIP + Constants.API_RE_ACTIVE_ACC_NIP;
     String url_reset_password = Constants.URL_NIP + Constants.API_RESET_ACC_NIP;
     String url_login = Constants.URL_NIP + Constants.API_LOGIN_ACC_NIP;
 
@@ -88,8 +88,24 @@ public class LoginModel extends BasicModel {
         requestServer.putApi(url_reset_password, jsonObject, null, responseHandle);
     }
 
-    public void reactiveNipAccoint(String jsonObject, ResponseHandle<RESP_Reactive> responseHandle) {
-        requestServer.putApi(url_reactive, jsonObject, null, responseHandle);
+    public void reactiveNipAccoint(String user_name, String service_code, boolean isPhone, ResponseHandle<RESP_Reactive> responseHandle) {
+        String url_reactive = Constants.URL_NIP + Constants.API_RE_ACTIVE_ACC_NIP;
+
+        ReactiveNip reactiveNip = new ReactiveNip();
+        reactiveNip.setUsername(user_name);
+        reactiveNip.setService_code(service_code);
+
+        if (isPhone) {
+            reactiveNip.setSendMail(0);
+            reactiveNip.setAccountType("PHONE-NUMBER");
+        } else {
+            reactiveNip.setSendMail(1);
+            reactiveNip.setAccountType("EMAIL");
+        }
+
+        Log.e("reactive", "object " + JsonHelper.toJson(reactiveNip));
+        Log.e("active", "urrl " + url_reactive);
+        requestServer.putApi(url_reactive, JsonHelper.toJson(reactiveNip), null, responseHandle);
     }
 
 

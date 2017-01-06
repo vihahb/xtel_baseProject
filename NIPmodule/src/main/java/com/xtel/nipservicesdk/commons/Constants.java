@@ -30,7 +30,7 @@ public class Constants {
     public static final String API_REGISTER_NIP = "v1.0/g/user";
     public static final String API_LOGIN_ACC_NIP = "v1.0/m/user/login";
     public static final String API_ACTIVE_ACCOUNT = "v1.0/g/user/active";
-    public static final String API_RE_ACTIVE_ACC_NIP = "v1.0/g/user";
+    public static final String API_RE_ACTIVE_ACC_NIP = "v1.0/g/user/re-active";
     public static final String API_RESET_ACC_NIP = "v1.0/g/user/reset-pwd";
 
     /***
