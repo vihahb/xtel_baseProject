@@ -23,9 +23,11 @@ import com.xtel.nipservicesdk.CallbackManager;
 import com.xtel.nipservicesdk.callback.CallbacListener;
 import com.xtel.nipservicesdk.callback.CallbackLisenerRegister;
 import com.xtel.nipservicesdk.callback.CallbackListenerActive;
+import com.xtel.nipservicesdk.callback.CallbackListenerReactive;
 import com.xtel.nipservicesdk.callback.CallbackListenerReset;
 import com.xtel.nipservicesdk.model.entity.Error;
 import com.xtel.nipservicesdk.model.entity.RESP_Login;
+import com.xtel.nipservicesdk.model.entity.RESP_Reactive;
 import com.xtel.nipservicesdk.model.entity.RESP_Register;
 import com.xtel.nipservicesdk.model.entity.RESP_Reset;
 import com.xtel.nipservicesdk.utils.JsonHelper;
@@ -98,23 +100,27 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
     }
 
     public void ReActive(View view) {
-//        String username = editText.getText().toString();
-//        callbackManager.reactiveNipAccount(username, isPhone, new CallbackListenerReactive() {
-//            @Override
-//            public void onSuccess(RESP_Reactive reactive) {
-//                Log.e("reactive", JsonHelper.toJson(reactive));
-//            }
-//
-//            @Override
-//            public void onError(Error error) {
-//                Log.e("reactive", JsonHelper.toJson(error));
-//            }
-//        });
-        onResetAccount();
+        String username = editText.getText().toString();
+        callbackManager.reactiveNipAccount(username, isPhone, new CallbackListenerReactive() {
+            @Override
+            public void onSuccess(RESP_Reactive reactive) {
+                Log.e("reactive", JsonHelper.toJson(reactive));
+            }
+
+            @Override
+            public void onError(Error error) {
+                Log.e("reactive", JsonHelper.toJson(error));
+            }
+        });
+//        onResetAccount();
     }
 
     public void LoginFace(View v) {
         onLogin();
+    }
+
+    public void GetSession(View v) {
+        showShortToast(callbackManager.getCurrentSession());
     }
 
     @SuppressWarnings("deprecation")

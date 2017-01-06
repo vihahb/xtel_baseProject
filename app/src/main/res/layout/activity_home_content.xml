@@ -67,5 +67,12 @@
             android:layout_marginTop="16dp"
             android:onClick="LoginFace"
             android:text="Login Face" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:onClick="GetSession"
+            android:text="Get Session" />
     </LinearLayout>
 </ScrollView>

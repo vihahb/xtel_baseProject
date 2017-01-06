@@ -144,7 +144,7 @@ public class CallbackManager {
         return new CallbackManager(activity);
     }
 
-    public static String getSession() {
+    public String getCurrentSession() {
         return LoginModel.getInstance().getSessiong();
     }
 
@@ -370,23 +370,23 @@ public class CallbackManager {
 //        }
 //    }
 
-//    public void getNewSesion(final CallbacListener callbacListener) {
-//        String service_code = LoginModel.getInstance().getServiceCode(activity);
-//
-//        if (service_code == null || service_code.isEmpty()) {
-//            callbacListener.onError(new Error(-2, activity.getString(R.string.error), activity.getString(R.string.error_no_service_code)));
-//            return;
-//        }
-//
-//        this.callbacListener = callbacListener;
-//
-//        object.clear();
-//        object.add(1);
-//        object.add(service_code);
-//
-//        if (checkPermission())
-//            iCmd.execute();
-//    }
+    public void getNewSesion(final CallbacListener callbacListener) {
+        String service_code = LoginModel.getInstance().getServiceCode(activity);
+
+        if (service_code == null || service_code.isEmpty()) {
+            callbacListener.onError(new Error(-2, activity.getString(R.string.error), activity.getString(R.string.error_no_service_code)));
+            return;
+        }
+
+        this.callbacListener = callbacListener;
+
+        object.clear();
+        object.add(1);
+        object.add(service_code);
+
+        if (checkPermission())
+            iCmd.execute();
+    }
 
     private boolean checkPermission() {
         return PermissionHelper.checkOnlyPermission(Manifest.permission.READ_PHONE_STATE, activity, REQUEST_PERMISSION);
