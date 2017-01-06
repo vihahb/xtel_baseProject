@@ -12,10 +12,23 @@ public class ResetEntity {
     private String email;
 
     @Expose
+    private String usename;
+
+
+    @Expose
     private String service_code;
 
     @Expose
-    private int sendEmail;
+    private int sendMail;
+
+    @Expose
+    private String accountType;
+
+    @Expose
+    private String password;
+
+    @Expose
+    private String authorization_code;
 
     public String getEmail() {
         return email;
@@ -23,6 +36,14 @@ public class ResetEntity {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUsename() {
+        return usename;
+    }
+
+    public void setUsename(String usename) {
+        this.usename = usename;
     }
 
     public String getService_code() {
@@ -33,20 +54,48 @@ public class ResetEntity {
         this.service_code = service_code;
     }
 
-    public int getSendEmail() {
-        return sendEmail;
+    public int getSendMail() {
+        return sendMail;
     }
 
-    public void setSendEmail(int sendEmail) {
-        this.sendEmail = sendEmail;
+    public void setSendMail(int sendMail) {
+        this.sendMail = sendMail;
+    }
+
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getAuthorization_code() {
+        return authorization_code;
+    }
+
+    public void setAuthorization_code(String authorization_code) {
+        this.authorization_code = authorization_code;
     }
 
     @Override
     public String toString() {
         return "ResetEntity{" +
                 "email='" + email + '\'' +
+                ", usename='" + usename + '\'' +
                 ", service_code='" + service_code + '\'' +
-                ", sendEmail=" + sendEmail +
+                ", sendMail=" + sendMail +
+                ", accountType='" + accountType + '\'' +
+                ", password='" + password + '\'' +
+                ", authorization_code='" + authorization_code + '\'' +
                 '}';
     }
 }

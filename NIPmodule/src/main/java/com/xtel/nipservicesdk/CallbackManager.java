@@ -20,9 +20,6 @@ import com.xtel.nipservicesdk.model.entity.RESP_None;
 import com.xtel.nipservicesdk.model.entity.RESP_Reactive;
 import com.xtel.nipservicesdk.model.entity.RESP_Register;
 import com.xtel.nipservicesdk.model.entity.RESP_Reset;
-import com.xtel.nipservicesdk.model.entity.ReactiveNip;
-import com.xtel.nipservicesdk.model.entity.ResetEntity;
-import com.xtel.nipservicesdk.utils.JsonHelper;
 import com.xtel.nipservicesdk.utils.PermissionHelper;
 import com.xtel.nipservicesdk.utils.SharedUtils;
 
@@ -36,6 +33,7 @@ public class CallbackManager {
     public final int REQUEST_PERMISSION = 111;
     private CallbacListener callbacListener;
     private CallbackLisenerRegister callbacListenerRegister;
+    private CallbackListenerReset callbackListenerReset;
     private Activity activity;
     private ArrayList<Object> object = new ArrayList<>();
 
@@ -97,7 +95,7 @@ public class CallbackManager {
                     }
                 });
             } else if ((Integer) object.get(0) == 5){
-                LoginModel.getInstance().registerAccountNip((String) object.get(1), (String) object.get(2), (String) object.get(3), (int) object.get(4), (String) object.get(5), (String) object.get(6), new ResponseHandle<RESP_Register>(RESP_Register.class) {
+                LoginModel.getInstance().registerAccountNip((String) object.get(1), (String) object.get(2), (String) object.get(3), (boolean) object.get(4), (String) object.get(5), new ResponseHandle<RESP_Register>(RESP_Register.class) {
                     @Override
                     public void onSuccess(RESP_Register obj) {
                         SharedUtils.getInstance().putStringValue(Constants.USER_ACTIVATION_CODE, obj.getActivation_code());
@@ -107,6 +105,18 @@ public class CallbackManager {
                     @Override
                     public void onError(Error error) {
                         callbacListenerRegister.onError(error);
+                    }
+                });
+            } else if ((Integer) object.get(0) == 6) {
+                LoginModel.getInstance().resetPassworf((String) object.get(1), (String) object.get(2), (String) object.get(3), (boolean) object.get(4), (String) object.get(5), new ResponseHandle<RESP_Reset>(RESP_Reset.class) {
+                    @Override
+                    public void onSuccess(RESP_Reset obj) {
+                        callbackListenerReset.onSuccess(obj);
+                    }
+
+                    @Override
+                    public void onError(Error error) {
+                        callbackListenerReset.onError(error);
                     }
                 });
             }
@@ -196,7 +206,7 @@ public class CallbackManager {
             iCmd.execute();
     }
 
-    public void registerNipService(String user_name, String password, String email, int sendMail, String type, final CallbackLisenerRegister callbackLisenerRegister) {
+    public void registerNipService(String user_name, String password, String email, boolean isPhone, final CallbackLisenerRegister callbackLisenerRegister) {
         String service_code = LoginModel.getInstance().getServiceCode(activity);
         if (service_code == null || service_code.isEmpty()) {
             callbacListenerRegister.onError(new Error(-2, activity.getString(R.string.error), activity.getString(R.string.error_no_service_code)));
@@ -212,8 +222,7 @@ public class CallbackManager {
         object.add(user_name);
         object.add(password);
         object.add(email);
-        object.add(sendMail);
-        object.add(type);
+        object.add(isPhone);
         object.add(service_code);
 
         if (checkPermission())
@@ -221,26 +230,60 @@ public class CallbackManager {
 
     }
 
-    public void resetNipAccount(String email, int sendEmail, final CallbackListenerReset callbacListener) {
+    public void AdapterReset(String user_email, String password, String authorization_code, final CallbackListenerReset callbackListenerReset) {
+        this.callbackListenerReset = callbackListenerReset;
+        if (!checkNumber(user_email)) {
+            resetNipAccount(user_email, null, false, null);
+        } else {
+            resetNipAccount(user_email, password, true, authorization_code);
+        }
+    }
+
+    private boolean checkNumber(String number) {
+        long number_long;
+        boolean check = true;
+
+        if (number.length() < 10 && number.length() > 11) {
+            Log.e("Sai so: ", number.toString());
+        } else {
+            try {
+                number_long = Long.parseLong(number);
+            } catch (Exception e) {
+                e.printStackTrace();
+                check = false;
+            }
+        }
+
+        if (!check) {
+            Log.e("Sai kieu: ", number.toString());
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+    public void resetNipAccount(String email, String password, boolean isPhone, String authorization_code) {
+
         String service_code = LoginModel.getInstance().getServiceCode(activity);
-        ResetEntity resetEntity = new ResetEntity();
-        resetEntity.setEmail(email);
-        if (sendEmail == 1) {
-            resetEntity.setSendEmail(1);
-        } else
-            resetEntity.setSendEmail(0);
+        if (service_code == null || service_code.isEmpty()) {
+            callbacListenerRegister.onError(new Error(-2, activity.getString(R.string.error), activity.getString(R.string.error_no_service_code)));
+            return;
+        }
 
-        LoginModel.getInstance().resetPassworf(JsonHelper.toJson(resetEntity), new ResponseHandle<RESP_Reset>(RESP_Reset.class) {
-            @Override
-            public void onSuccess(RESP_Reset obj) {
-                callbacListener.onSuccess(obj);
-            }
+        Log.e("TAG", "DFDFFDSFDSFDS");
 
-            @Override
-            public void onError(Error error) {
-                callbacListener.onError(error);
-            }
-        });
+
+        object.clear();
+        object.add(6);
+        object.add(email);
+        object.add(password);
+        object.add(service_code);
+        object.add(isPhone);
+        object.add(authorization_code);
+
+        iCmd.execute();
+
     }
 
     public void activeNipAccount(String authorization_code, String accountType, final CallbackListenerActive callbackListenerActive) {

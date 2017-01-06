@@ -18,6 +18,7 @@ import com.xtel.nipservicesdk.model.entity.RESP_Register;
 import com.xtel.nipservicesdk.model.entity.RESP_Reset;
 import com.xtel.nipservicesdk.model.entity.ReactiveNip;
 import com.xtel.nipservicesdk.model.entity.RegisterModel;
+import com.xtel.nipservicesdk.model.entity.ResetEntity;
 import com.xtel.nipservicesdk.utils.DeviceInfo;
 import com.xtel.nipservicesdk.utils.JsonHelper;
 import com.xtel.nipservicesdk.utils.SharedUtils;
@@ -57,16 +58,17 @@ public class LoginModel extends BasicModel {
     }
 
 
-    public void registerAccountNip(String user_name, String password, String email, int sendMail, String type, String service_code, ResponseHandle<RESP_Register> responseHandle) {
+    public void registerAccountNip(String user_name, String password, String email, boolean isPhone, String service_code, ResponseHandle<RESP_Register> responseHandle) {
         RegisterModel registerNipModel = new RegisterModel();
         registerNipModel.setUsername(user_name);
         registerNipModel.setPassword(password);
         registerNipModel.setEmail(email);
-        registerNipModel.setSendEmail(sendMail);
         registerNipModel.setService_code(service_code);
-        if (type.equals("EMAIL")) {
+        if (!isPhone) {
             registerNipModel.setAccountType("EMAIL");
-        } else if (type.equals("PHONE-NUMBER")){
+            registerNipModel.setSendEmail(1);
+        } else {
+            registerNipModel.setSendEmail(0);
             registerNipModel.setAccountType("PHONE-NUMBER");
         }
         Log.e("Object reg nip", JsonHelper.toJson(registerNipModel));
@@ -84,8 +86,24 @@ public class LoginModel extends BasicModel {
         requestServer.postApi(url_login, JsonHelper.toJson(loginNipModel), null, responseHandle);
     }
 
-    public void resetPassworf(String jsonObject, ResponseHandle<RESP_Reset> responseHandle) {
-        requestServer.putApi(url_reset_password, jsonObject, null, responseHandle);
+    public void resetPassworf(String email, String password, String service_code, boolean isPhone, String authorization_code, ResponseHandle<RESP_Reset> responseHandle) {
+        ResetEntity resetEntity = new ResetEntity();
+
+        resetEntity.setService_code(service_code);
+
+        if (isPhone) {
+            resetEntity.setUsename(email);
+            resetEntity.setSendMail(0);
+            resetEntity.setAccountType("PHONE-NUMBER");
+            resetEntity.setPassword(password);
+            resetEntity.setAuthorization_code(authorization_code);
+        } else {
+            resetEntity.setEmail(email);
+            resetEntity.setSendMail(1);
+            resetEntity.setAccountType("EMAIL");
+        }
+
+        requestServer.putApi(url_reset_password, JsonHelper.toJson(resetEntity), null, responseHandle);
     }
 
     public void reactiveNipAccoint(String user_name, String service_code, boolean isPhone, ResponseHandle<RESP_Reactive> responseHandle) {
