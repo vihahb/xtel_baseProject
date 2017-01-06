@@ -109,6 +109,10 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
         });
     }
 
+    public void LoginFace(View v) {
+        onLogin();
+    }
+
     @SuppressWarnings("deprecation")
     private void initNavigation() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -123,17 +127,16 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
     }
 
     private void onLogin() {
-        String accessTokent = "YOUR_ACCESS_TOKEN_KEY";
+        String accessTokent = "EAAXEtiHaSw0BAMJ73gmpSMSBAVIAdlZCpY9YEzcd5T8j021otZC7sFuj5A0CcI6wKxmZAbOdNcOrKiMixvHGATq9PNQ1QKOLkrWSPEV21BuHtvOnnKy14r10G2dAoeT4JUk58s1ED89VrQXybGVWqkJ2gOJJUy86METvouu3e7eodjjBo6dl4vb6iZAJte6rbEdZA9kDYjobQijtXgpDw";
         callbackManager.LoginFaceook(accessTokent, new CallbacListener() {
             @Override
             public void onSuccess(RESP_Login success) {
-                Log.e("Session", success.getSession());
+                Log.e("login", success.getSession());
             }
 
             @Override
             public void onError(Error error) {
-                Log.e("Error: + ", error.getMessage());
-                Log.e("Error code: + ", String.valueOf(error.getCode()));
+                Log.e("login", JsonHelper.toJson(error));
             }
         });
 

@@ -1,58 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:fillViewport="true">
 
-
-    <EditText
-        android:id="@+id/phone"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="36dp"
-        android:layout_marginRight="36dp" />
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <RadioGroup
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="36dp"
-        android:layout_marginRight="36dp">
 
-        <RadioButton
-            android:id="@+id/rd_phone"
+        <EditText
+            android:id="@+id/phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="36dp"
+            android:layout_marginRight="36dp" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="36dp"
+            android:layout_marginRight="36dp">
+
+            <RadioButton
+                android:id="@+id/rd_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:onClick="RadioButton"
+                android:text="Phone" />
+
+            <RadioButton
+                android:id="@+id/rd_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="RadioButton"
+                android:text="Email" />
+        </RadioGroup>
+
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
-            android:onClick="RadioButton"
-            android:text="Phone" />
+            android:layout_marginTop="16dp"
+            android:onClick="Register"
+            android:text="Register" />
 
-        <RadioButton
-            android:id="@+id/rd_email"
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="RadioButton"
-            android:text="Email" />
-    </RadioGroup>
+            android:layout_marginTop="16dp"
+            android:onClick="Active"
+            android:text="Active" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:onClick="Register"
-        android:text="Register" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:onClick="ReActive"
+            android:text="Re-ctive" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:onClick="Active"
-        android:text="Active" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:onClick="ReActive"
-        android:text="Re-ctive" />
-</LinearLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:onClick="LoginFace"
+            android:text="Login Face" />
+    </LinearLayout>
+</ScrollView>
