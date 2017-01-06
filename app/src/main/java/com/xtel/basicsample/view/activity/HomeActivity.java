@@ -20,14 +20,14 @@ import com.xtel.basicsample.R;
 import com.xtel.basicsample.presenter.HomePresenter;
 import com.xtel.basicsample.view.activity.inf.IHome;
 import com.xtel.nipservicesdk.CallbackManager;
-import com.xtel.nipservicesdk.callback.CallbackListenerActive;
 import com.xtel.nipservicesdk.callback.CallbacListener;
 import com.xtel.nipservicesdk.callback.CallbackLisenerRegister;
-import com.xtel.nipservicesdk.callback.CallbackListenerReactive;
+import com.xtel.nipservicesdk.callback.CallbackListenerActive;
+import com.xtel.nipservicesdk.callback.CallbackListenerReset;
 import com.xtel.nipservicesdk.model.entity.Error;
 import com.xtel.nipservicesdk.model.entity.RESP_Login;
-import com.xtel.nipservicesdk.model.entity.RESP_Reactive;
 import com.xtel.nipservicesdk.model.entity.RESP_Register;
+import com.xtel.nipservicesdk.model.entity.RESP_Reset;
 import com.xtel.nipservicesdk.utils.JsonHelper;
 
 
@@ -61,10 +61,7 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
     }
 
     public void RadioButton(View view) {
-        if (view.getId() == R.id.rd_phone)
-            isPhone = true;
-        else
-            isPhone = false;
+        isPhone = view.getId() == R.id.rd_phone;
     }
 
     @Override
@@ -84,6 +81,12 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
                 showSnackBarShort(v, "Replace Message....");
             }
         });
+//        onLogin();
+//        onLoginAccountKit();
+//        onLoginUser();
+
+//        onRegisterNip();
+//        activeAccount();
     }
 
     public void Register(View view) {
@@ -95,18 +98,19 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
     }
 
     public void ReActive(View view) {
-        String username = editText.getText().toString();
-        callbackManager.reactiveNipAccount(username, isPhone, new CallbackListenerReactive() {
-            @Override
-            public void onSuccess(RESP_Reactive reactive) {
-                Log.e("reactive", JsonHelper.toJson(reactive));
-            }
-
-            @Override
-            public void onError(Error error) {
-                Log.e("reactive", JsonHelper.toJson(error));
-            }
-        });
+//        String username = editText.getText().toString();
+//        callbackManager.reactiveNipAccount(username, isPhone, new CallbackListenerReactive() {
+//            @Override
+//            public void onSuccess(RESP_Reactive reactive) {
+//                Log.e("reactive", JsonHelper.toJson(reactive));
+//            }
+//
+//            @Override
+//            public void onError(Error error) {
+//                Log.e("reactive", JsonHelper.toJson(error));
+//            }
+//        });
+        onResetAccount();
     }
 
     public void LoginFace(View v) {
@@ -196,7 +200,7 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
             email = editText.getText().toString();
         }
 
-        callbackManager.registerNipService(user_name, password, email, sendmail, type, new CallbackLisenerRegister() {
+        callbackManager.registerNipService(user_name, password, email, isPhone, new CallbackLisenerRegister() {
             @Override
             public void onSuccess(RESP_Register register) {
                 Log.e("Activation_code nip", JsonHelper.toJson(register));
@@ -210,7 +214,7 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
     }
 
     private void activeAccount() {
-        String auth_code = "AQCHNVx3KKxbZvZsPW8uqt5rqjG6qAYpLLKs28EUWf8O8Tv0EOHVxAuukVURtIrBB-VGPsSPnrzcglGDVBgdMaDWSlmhOjCn7hU3qjcnCF_-_2M6UA9GuYlM-kEWsejXjOb-u2Gl9k-zQMZtqPUhnbierQ2eusRHye__c7enEr9yRM1K-P23Kpr1MAJgZJhQ_6_l9has4h4DApvpeORHGd0BCMwzb43IrPtqTOkSQd-HE15QZUE3cS01jiT-Ggqd7bHT64Q7UXEWSAqRqPprlO_O";
+        String auth_code = "AQA7tbB4ckMwX0n2C2Q2wrYe6id-Puy7Jo9F1OkaT10HKE570OGe1w0v0nNaV9uXTxatrRk5zmG-8NiGXwMaIwk1Rh24gN64yULYgqDhEt1LsNrnzhCcbyR4SVLHW-GNhoxGyxIeLxDP3C1bDkrniD8EVKaEfTT4n7-0PUVLQ7tH_Lrzc3DIyNNFnVk7uniA_2Xs419DkYvR29ZZXwMX18gn3x167B_WT8cCcZCJH9Zpm4XOYXC9jYHWGVvSMAaIZCS1V5Crnp8K52p7RqUFFRHa";
         String type = "PHONE-NUMBER";
 
         callbackManager.activeNipAccount(auth_code, type, new CallbackListenerActive() {
@@ -222,6 +226,27 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
             @Override
             public void onError(Error error) {
                 Log.e("active", JsonHelper.toJson(error));
+                Log.e("Error reg code nip: + ", String.valueOf(error.getCode()));
+//                Log.e("Object reg Err", error.toString());
+            }
+        });
+    }
+
+    public void onResetAccount() {
+        String email = editText.getText().toString();
+        String password = "654321";
+        String authorization_code = "AQCE09Se4qhYQguFW5X12Ioo9iP19OG1v665iCc6V9grj_SoGn0aSVT7qQ94Idr-YoEOhlxxfVHR0-mBXZCHuKbt6xABF2xRUr7m_-twsjkNQXk7Q4CmW887GguAkvJwFDFb0Bm5AgVKm3YfkIUa2Y817-SsGWxm0DujKSNPgqzv1E9DaKgSg9y-kcOx3l50GbL_jGtFHkZaZe8DOHFaHH1MqMhNDRPFJpmSwP4N2_aZ4zO5zqMoL8BKVPfXdf12ui7MRV65oTjIYzaCkavshYST";
+
+
+        callbackManager.AdapterReset(email, password, authorization_code, new CallbackListenerReset() {
+            @Override
+            public void onSuccess(RESP_Reset reset) {
+                Log.e("reset object: ", JsonHelper.toJson(reset));
+            }
+
+            @Override
+            public void onError(Error error) {
+                Log.e("reset code: ", String.valueOf(error.getCode()));
             }
         });
     }
