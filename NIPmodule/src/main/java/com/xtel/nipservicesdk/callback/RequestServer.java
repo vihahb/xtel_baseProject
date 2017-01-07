@@ -1,7 +1,6 @@
 package com.xtel.nipservicesdk.callback;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.xtel.nipservicesdk.MyApplication;
 import com.xtel.nipservicesdk.R;
@@ -9,7 +8,6 @@ import com.xtel.nipservicesdk.commons.Constants;
 import com.xtel.nipservicesdk.model.entity.Error;
 
 import java.io.IOException;
-import java.security.interfaces.RSAKey;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -73,7 +71,6 @@ public class RequestServer {
                 return response.body().string();
             } catch (IOException e) {
                 e.printStackTrace();
-                Log.e("TAG", e.toString());
                 isSuccess = false;
                 return null;
             }

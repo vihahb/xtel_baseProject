@@ -3,9 +3,7 @@ package com.xtel.nipservicesdk;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.xtel.nipservicesdk.callback.CallbacListener;
 import com.xtel.nipservicesdk.callback.CallbackLisenerRegister;
@@ -22,8 +20,6 @@ import com.xtel.nipservicesdk.model.entity.RESP_None;
 import com.xtel.nipservicesdk.model.entity.RESP_Reactive;
 import com.xtel.nipservicesdk.model.entity.RESP_Register;
 import com.xtel.nipservicesdk.model.entity.RESP_Reset;
-import com.xtel.nipservicesdk.model.entity.ReactiveNip;
-import com.xtel.nipservicesdk.model.entity.ResetEntity;
 import com.xtel.nipservicesdk.utils.JsonHelper;
 import com.xtel.nipservicesdk.utils.PermissionHelper;
 import com.xtel.nipservicesdk.utils.SharedUtils;
@@ -45,22 +41,18 @@ public class CallbackManager {
     private ICmd iCmd = new ICmd() {
         @Override
         public void execute() {
-            Log.e("TAG", "DFDFFDSFDSFDS      " + object.get(0));
             if ((Integer) object.get(0) == 1) {
 
                 LoginModel.getInstance().getNewSession((String) object.get(1), new ResponseHandle<RESP_Login>(RESP_Login.class) {
                     @Override
                     public void onSuccess(RESP_Login obj) {
                         saveLoginInfo(obj);
-                        Log.e("newsession", JsonHelper.toJson(obj));
-
                         if (callbacListener != null)
                             callbacListener.onSuccess(obj);
                     }
 
                     @Override
                     public void onError(Error error) {
-                        Log.e("newsession", JsonHelper.toJson(error));
                         if (callbacListener != null)
                             callbacListener.onError(error);
                     }
@@ -69,14 +61,12 @@ public class CallbackManager {
                 LoginModel.getInstance().postFacebookData2Server((String) object.get(1), (String) object.get(2), new ResponseHandle<RESP_Login>(RESP_Login.class) {
                     @Override
                     public void onSuccess(RESP_Login obj) {
-                        Log.e("loginface", JsonHelper.toJson(obj));
                         saveLoginInfo(obj);
                         callbacListener.onSuccess(obj);
                     }
 
                     @Override
                     public void onError(Error error) {
-                        Log.e("loginface_error", JsonHelper.toJson(error));
                         callbacListener.onError(error);
                     }
                 });
@@ -84,14 +74,12 @@ public class CallbackManager {
                 LoginModel.getInstance().postAccountKitData2Server((String) object.get(1), (String) object.get(2), new ResponseHandle<RESP_Login>(RESP_Login.class) {
                     @Override
                     public void onSuccess(RESP_Login obj) {
-                        Log.e("newsession", JsonHelper.toJson(obj));
                         saveLoginInfo(obj);
                         callbacListener.onSuccess(obj);
                     }
 
                     @Override
                     public void onError(Error error) {
-                        Log.e("newsession", JsonHelper.toJson(error));
                         callbacListener.onError(error);
                     }
                 });
@@ -163,8 +151,6 @@ public class CallbackManager {
             return;
         }
 
-        Log.e("TAG", "DFDFFDSFDSFDS");
-
         this.callbacListener = callbacListener;
 
         object.clear();
@@ -185,8 +171,6 @@ public class CallbackManager {
             return;
         }
 
-        Log.e("TAG", "DFDFFDSFDSFDS");
-
         this.callbacListener = callbacListener;
 
         object.clear();
@@ -206,8 +190,6 @@ public class CallbackManager {
             return;
         }
 
-        Log.e("TAG", "DFDFFDSFDSFDS");
-
         this.callbacListener = callbacListener;
 
         object.clear();
@@ -226,8 +208,6 @@ public class CallbackManager {
             callbacListenerRegister.onError(new Error(-2, activity.getString(R.string.error), activity.getString(R.string.error_no_service_code)));
             return;
         }
-
-        Log.e("TAG", "DFDFFDSFDSFDS");
 
         this.callbacListenerRegister = callbackLisenerRegister;
 
@@ -258,7 +238,7 @@ public class CallbackManager {
         boolean check = true;
 
         if (number.length() < 10 && number.length() > 11) {
-            Log.e("Sai so: ", number.toString());
+
         } else {
             try {
                 number_long = Long.parseLong(number);
@@ -269,7 +249,7 @@ public class CallbackManager {
         }
 
         if (!check) {
-            Log.e("Sai kieu: ", number.toString());
+
             return false;
         } else {
             return true;
@@ -284,9 +264,6 @@ public class CallbackManager {
             callbacListenerRegister.onError(new Error(-2, activity.getString(R.string.error), activity.getString(R.string.error_no_service_code)));
             return;
         }
-
-        Log.e("TAG", "DFDFFDSFDSFDS");
-
 
         object.clear();
         object.add(6);

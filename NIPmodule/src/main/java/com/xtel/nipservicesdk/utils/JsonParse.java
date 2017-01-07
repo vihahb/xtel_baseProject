@@ -1,6 +1,5 @@
 package com.xtel.nipservicesdk.utils;
 
-import android.util.Log;
 import android.view.View;
 
 import com.xtel.nipservicesdk.MyApplication;
@@ -19,7 +18,6 @@ public class JsonParse {
             JSONObject jsonObject = new JSONObject(result);
             return true;
         } catch (Exception e) {
-            Log.e("Loi_check_json", e.getMessage());
             e.printStackTrace();
             return false;
         }

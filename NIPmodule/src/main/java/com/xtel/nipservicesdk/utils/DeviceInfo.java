@@ -2,7 +2,6 @@ package com.xtel.nipservicesdk.utils;
 
 import android.annotation.SuppressLint;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 
 import com.xtel.nipservicesdk.MyApplication;
 import com.xtel.nipservicesdk.model.entity.DeviceObject;

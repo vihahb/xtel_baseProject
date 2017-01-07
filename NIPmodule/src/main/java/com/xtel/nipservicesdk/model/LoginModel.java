@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.xtel.nipservicesdk.callback.ResponseHandle;
 import com.xtel.nipservicesdk.commons.Constants;
@@ -71,7 +70,6 @@ public class LoginModel extends BasicModel {
             registerNipModel.setSendEmail(0);
             registerNipModel.setAccountType("PHONE-NUMBER");
         }
-        Log.e("Object reg nip", JsonHelper.toJson(registerNipModel));
         requestServer.postApi(url_reg_nip_acc, JsonHelper.toJson(registerNipModel), null, responseHandle);
     }
 
@@ -82,7 +80,6 @@ public class LoginModel extends BasicModel {
         loginNipModel.setService_code(service_code);
         loginNipModel.setDevInfo(DeviceInfo.getDeviceObject());
         String request = JsonHelper.toJson(loginNipModel);
-        Log.e("Request len: + ", request);
         requestServer.postApi(url_login, JsonHelper.toJson(loginNipModel), null, responseHandle);
     }
 
@@ -121,8 +118,6 @@ public class LoginModel extends BasicModel {
             reactiveNip.setAccountType("EMAIL");
         }
 
-        Log.e("reactive", "object " + JsonHelper.toJson(reactiveNip));
-        Log.e("active", "urrl " + url_reactive);
         requestServer.putApi(url_reactive, JsonHelper.toJson(reactiveNip), null, responseHandle);
     }
 
@@ -147,9 +142,6 @@ public class LoginModel extends BasicModel {
         activeNip.setAuthorization_code(authorization_code);
         activeNip.setActivation_code(SharedUtils.getInstance().getStringValue(Constants.USER_ACTIVATION_CODE));
         activeNip.setAccountType(accountType);
-
-        Log.e("active", "object " + JsonHelper.toJson(activeNip));
-        Log.e("active", "url " + url_active);
 
         requestServer.postApi(url_active, JsonHelper.toJson(activeNip), null, responseHandle);
     }

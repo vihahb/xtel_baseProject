@@ -115,6 +115,20 @@ public class HomeActivity extends BasicActivity implements NavigationView.OnNavi
 //        onResetAccount();
     }
 
+    public void GetNewSession(View view) {
+        callbackManager.getNewSesion(new CallbacListener() {
+            @Override
+            public void onSuccess(RESP_Login success) {
+
+            }
+
+            @Override
+            public void onError(Error error) {
+
+            }
+        });
+    }
+
     public void LoginFace(View v) {
         onLogin();
     }

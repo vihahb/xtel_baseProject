@@ -1,7 +1,5 @@
 package com.xtel.nipservicesdk.callback;
 
-import android.util.Log;
-
 import com.xtel.nipservicesdk.model.entity.RESP_Basic;
 import com.xtel.nipservicesdk.model.entity.RESP_None;
 import com.xtel.nipservicesdk.utils.JsonHelper;
@@ -21,7 +19,6 @@ public abstract class ResponseHandle<T extends RESP_Basic> {
     }
 
     public void onSuccess(String result) {
-        Log.e("ResponHandle", "null k: " + result);
         try {
             boolean isJson;
             isJson = !(result == null || result.isEmpty());
