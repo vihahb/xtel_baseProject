@@ -156,4 +156,8 @@ public class LoginModel extends BasicModel {
             return null;
         }
     }
+
+    public void logout() {
+        SharedUtils.getInstance().clearData();
+    }
 }
